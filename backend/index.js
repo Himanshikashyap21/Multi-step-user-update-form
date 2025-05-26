@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require('dotenv');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+dotenv.config();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,7 +24,7 @@ if (!fs.existsSync(uploadDir)) {
 app.use('/uploads', express.static('uploads'));
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/userProfile', {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
