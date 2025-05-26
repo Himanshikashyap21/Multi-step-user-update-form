@@ -130,31 +130,6 @@ app.post('/api/user', upload.single('profilePhoto'), async (req, res) => {
     }
 });
 
-app.get('/api/test-save', async (req, res) => {
-    try {
-        const dummy = new User({
-            profilePhoto: '',
-            username: 'testuser_' + Date.now(),
-            currentPassword: '123456',
-            newPassword: 'Test@1234',
-            profession: 'Developer',
-            companyName: '',
-            addressLine1: '123 Test Street',
-            country: 'India',
-            state: 'Maharashtra',
-            city: 'Mumbai',
-            subscriptionPlan: 'Basic',
-            newsletter: true,
-        });
-
-        const saved = await dummy.save();
-        res.json(saved);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
 // Dummy location data
 const countries = [
     { name: 'USA', states: ['California', 'Texas', 'New York'] },
