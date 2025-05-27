@@ -8,7 +8,7 @@ const UserProfileForm = () => {
         username: '',
         currentPassword: '',
         newPassword: '',
-        dob: '', // ✅ Added DOB field
+        dob: '',
         profession: '',
         companyName: '',
         addressLine1: '',
