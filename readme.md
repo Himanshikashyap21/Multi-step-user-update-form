@@ -16,7 +16,4 @@ A full-stack multi-step form built with **React, Node.js, Express, and MongoDB**
 - Database: MongoDB
 - Deployment: Vercel (frontend), Render (backend)
 
-> Live Demo: [your-frontend-link]  
-> Backend API: [your-backend-link]
-
 ---
