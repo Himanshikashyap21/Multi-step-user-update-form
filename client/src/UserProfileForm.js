@@ -8,6 +8,7 @@ const UserProfileForm = () => {
         username: '',
         currentPassword: '',
         newPassword: '',
+        dob: '', // ✅ Added DOB field
         profession: '',
         companyName: '',
         addressLine1: '',
@@ -17,6 +18,8 @@ const UserProfileForm = () => {
         subscriptionPlan: 'Basic',
         newsletter: true,
     });
+
+    const [passwordStrength, setPasswordStrength] = useState('');
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
@@ -29,19 +32,39 @@ const UserProfileForm = () => {
         fetchCountries();
     }, []);
 
+    const getPasswordStrength = (password) => {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        switch (strength) {
+            case 0:
+            case 1: return 'Weak';
+            case 2: return 'Moderate';
+            case 3: return 'Strong';
+            case 4: return 'Very Strong';
+            default: return '';
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Remove spaces for username
         const sanitizedValue = name === 'username' ? value.replace(/\s/g, '') : value;
 
         setFormData({ ...formData, [name]: sanitizedValue });
 
+        if (name === 'newPassword') {
+            const strength = getPasswordStrength(value);
+            setPasswordStrength(strength);
+        }
+
         if (name === 'country') {
-            setFormData({ ...formData, state: '', city: '', country: sanitizedValue }); // Reset state and city
+            setFormData({ ...formData, state: '', city: '', country: sanitizedValue });
             fetchStates(sanitizedValue);
         } else if (name === 'state') {
-            setFormData({ ...formData, city: '', state: sanitizedValue }); // Reset city
+            setFormData({ ...formData, city: '', state: sanitizedValue });
             fetchCities(sanitizedValue);
         }
     };
@@ -91,9 +114,8 @@ const UserProfileForm = () => {
         }
     };
 
-
     return (
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
             {step === 1 && (
                 <div>
                     <h2>Step 1: Personal Info</h2>
@@ -121,12 +143,24 @@ const UserProfileForm = () => {
                     />
                     <br /><br />
 
+                    <label htmlFor="dob">Date of Birth</label>
+                    <input
+                        type="date"
+                        name="dob"
+                        value={formData.dob}
+                        onChange={handleChange}
+                        max={new Date().toISOString().split("T")[0]}
+                        required
+                    />
+                    <br /><br />
+
                     <input
                         type="password"
                         name="currentPassword"
                         placeholder="Current Password"
                         onChange={handleChange}
                     /> <br /> <br />
+
                     <input
                         type="password"
                         name="newPassword"
@@ -136,7 +170,30 @@ const UserProfileForm = () => {
                         pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
                         title="Password must be at least 8 characters long, include 1 number and 1 special character."
                     />
-                    <br /> <br />
+                    <p>Password Strength: <strong>{passwordStrength}</strong></p>
+                    <div style={{
+                        height: '5px',
+                        width: '100%',
+                        backgroundColor: '#eee',
+                        borderRadius: '4px'
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width:
+                                passwordStrength === 'Weak' ? '25%' :
+                                    passwordStrength === 'Moderate' ? '50%' :
+                                        passwordStrength === 'Strong' ? '75%' :
+                                            passwordStrength === 'Very Strong' ? '100%' : '0%',
+                            backgroundColor:
+                                passwordStrength === 'Weak' ? 'red' :
+                                    passwordStrength === 'Moderate' ? 'orange' :
+                                        passwordStrength === 'Strong' ? 'blue' :
+                                            passwordStrength === 'Very Strong' ? 'green' : 'transparent',
+                            borderRadius: '4px',
+                            transition: 'width 0.3s ease'
+                        }}></div>
+                    </div>
+                    <br /><br />
                 </div>
             )}
 
